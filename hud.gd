@@ -40,8 +40,14 @@ var resolucao_opcoes: OptionButton
 var tela_cheia_opcao: CheckButton
 
 # Paleta da interface: altere estas cores para redesenhar rapidamente a identidade visual.
-const COR_FUNDO_MENU := Color(0.018, 0.035, 0.04, 0.94)
-const COR_DESTAQUE := Color("75d6ad")
+const COR_DESTAQUE := Color("d9b64f")
+const FONT_DISPLAY := preload("res://fonts/Creepster-Regular.ttf")
+const TEXTURA_MENU := preload("res://ui/ui_fundo_menu.jpg")
+const TEXTURA_PAINEL_MENU := preload("res://ui/ui_painel.jpg")
+const TEXTURA_PAINEL_HUD := preload("res://ui/ui_hud_placa.jpg")
+const TEXTURA_BOTAO_MENU := preload("res://ui/ui_botao.jpg")
+const TEXTURA_BOTAO_HOVER := preload("res://ui/ui_botao_hover.jpg")
+const TEXTURA_RETRATO := preload("res://ui/ui_retrato.jpg")
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -100,12 +106,12 @@ func _criar_hud() -> void:
 	retrato.offset_bottom = 112
 	_estilizar_painel(retrato)
 	add_child(retrato)
-	var iniciais := Label.new()
-	iniciais.text = "P\nRETRATO"
-	iniciais.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	iniciais.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	iniciais.add_theme_color_override("font_color", Color("a9c8c8"))
-	retrato.add_child(iniciais)
+	var insignia := TextureRect.new()
+	insignia.texture = TEXTURA_RETRATO
+	insignia.custom_minimum_size = Vector2(56, 56)
+	insignia.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	insignia.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	retrato.add_child(insignia)
 
 	var vida_painel := PanelContainer.new()
 	vida_painel.anchor_left = 0.0
@@ -128,7 +134,7 @@ func _criar_hud() -> void:
 	vida_barra.max_value = 100
 	vida_barra.value = 100
 	vida_barra.add_theme_stylebox_override("background", _caixa(Color("202b31")))
-	vida_barra.add_theme_stylebox_override("fill", _caixa(Color("75d6ad")))
+	vida_barra.add_theme_stylebox_override("fill", _caixa(Color("a2b85b")))
 	vida_layout.add_child(vida_barra)
 
 	# Estado da onda, ameaças e melhorias no canto superior direito.
@@ -219,7 +225,7 @@ func atualizar(vida: int, vida_maxima: int, municao: int, municao_maxima: int, d
 	municao_reserva_hud = reserva
 	vida_barra.max_value = vida_maxima
 	vida_barra.value = vida
-	vida_barra.add_theme_stylebox_override("fill", _caixa(Color("e56b6f") if vida <= vida_maxima * 0.3 else Color("75d6ad")))
+	vida_barra.add_theme_stylebox_override("fill", _caixa(Color("e56b4f") if vida <= vida_maxima * 0.3 else Color("a2b85b")))
 	vida_texto.text = "INTEGRIDADE  %d / %d" % [vida, vida_maxima]
 	if is_instance_valid(arma_texto) and arma_texto.text.ends_with("FACA"):
 		municao_texto.text = "FACA  //  SEM PENTE"
@@ -262,7 +268,7 @@ func atualizar_movimento(slide_restante: float, recarga_slide: float, correndo: 
 	elif correndo:
 		var estado := "PRONTO" if recarga_slide <= 0.0 else "%.1f s" % recarga_slide
 		movimento_texto.text = "CORRENDO  //  SLIDE " + estado
-		movimento_texto.add_theme_color_override("font_color", Color("75d6ad"))
+		movimento_texto.add_theme_color_override("font_color", Color("a2b85b"))
 	else:
 		movimento_texto.text = "SHIFT CORRER  //  C SLIDE"
 		movimento_texto.add_theme_color_override("font_color", Color("a9c8c8"))
@@ -278,11 +284,11 @@ func _atualizar_ameacas() -> void:
 		return
 	var quantidade := get_tree().get_nodes_in_group("inimigos").size()
 	if quantidade > 0:
-		ameacas_texto.text = "AMEACAS: %02d  /  %02d" % [quantidade, total_onda]
+		ameacas_texto.text = "ZUMBIS: %02d  /  %02d" % [quantidade, total_onda]
 		ameacas_texto.add_theme_color_override("font_color", Color("f2aa72"))
 	else:
-		ameacas_texto.text = "SETOR CONTROLADO"
-		ameacas_texto.add_theme_color_override("font_color", Color("75d6ad"))
+		ameacas_texto.text = "LIMPO! POR ENQUANTO..."
+		ameacas_texto.add_theme_color_override("font_color", Color("a2b85b"))
 
 func atualizar_onda(numero: int, total: int) -> void:
 	total_onda = total
@@ -303,29 +309,26 @@ func abrir_melhorias(opcoes: Array[Dictionary], numero_onda: int) -> void:
 	menu_melhoria.process_mode = Node.PROCESS_MODE_ALWAYS
 	menu_melhoria.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(menu_melhoria)
-	var fundo := ColorRect.new()
-	fundo.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	fundo.color = Color(0.012, 0.025, 0.028, 0.88)
-	fundo.mouse_filter = Control.MOUSE_FILTER_STOP
-	menu_melhoria.add_child(fundo)
+	_adicionar_fundo_estilizado(menu_melhoria, 0.62)
 	var painel := PanelContainer.new()
 	painel.anchor_left = 0.5
 	painel.anchor_top = 0.5
 	painel.anchor_right = 0.5
 	painel.anchor_bottom = 0.5
-	painel.offset_left = -405
-	painel.offset_top = -190
-	painel.offset_right = 405
-	painel.offset_bottom = 190
+	painel.offset_left = -500
+	painel.offset_top = -230
+	painel.offset_right = 500
+	painel.offset_bottom = 230
 	_estilizar_painel(painel)
 	menu_melhoria.add_child(painel)
 	var layout := VBoxContainer.new()
 	layout.add_theme_constant_override("separation", 18)
 	painel.add_child(layout)
-	var titulo := _criar_label("INTERVALO DE COMBATE  //  RONDA %02d" % numero_onda, 21)
+	var titulo := _criar_label("PIT STOP DOS ZUMBIS  //  RONDA %02d" % numero_onda, 28)
 	titulo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	titulo.add_theme_font_override("font", FONT_DISPLAY)
 	layout.add_child(titulo)
-	var subtitulo := _criar_label("Escolha um modulo. Todo reforco cobra seu preco.", 14)
+	var subtitulo := _criar_label("Escolhe um reforço. O RH dos zumbis não cobre danos.", 14)
 	subtitulo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	subtitulo.add_theme_color_override("font_color", Color("a9c8c8"))
 	layout.add_child(subtitulo)
@@ -336,15 +339,16 @@ func abrir_melhorias(opcoes: Array[Dictionary], numero_onda: int) -> void:
 	for indice in range(opcoes.size()):
 		var opcao: Dictionary = opcoes[indice]
 		var botao := Button.new()
-		botao.custom_minimum_size = Vector2(240, 245)
+		botao.custom_minimum_size = Vector2(260, 280)
 		botao.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		botao.text = "%s  //  %s\n\n%s\n\n[ INSTALAR ]" % [str(opcao.get("raridade", "Comum")).to_upper(), opcao.titulo, opcao.descricao]
+		botao.text = "★  %s\n\n%s\n\n%s\n\n[ EQUIPAR ]" % [str(opcao.get("raridade", "Comum")).to_upper(), opcao.titulo, opcao.descricao]
 		botao.alignment = HORIZONTAL_ALIGNMENT_CENTER
 		botao.add_theme_font_size_override("font_size", 14)
 		botao.add_theme_color_override("font_color", Color("edf6f2"))
-		var cor_raridade := _cor_raridade(str(opcao.get("raridade", "Comum")))
+		var raridade := str(opcao.get("raridade", "Comum"))
+		var cor_raridade := _cor_raridade(raridade)
 		botao.add_theme_color_override("font_hover_color", cor_raridade.lightened(0.3))
-		_estilizar_cartao_melhoria(botao, cor_raridade)
+		_estilizar_cartao_melhoria(botao, _textura_cartao_melhoria(raridade))
 		botao.pressed.connect(_selecionar_melhoria.bind(indice))
 		cartoes.add_child(botao)
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -363,11 +367,11 @@ func _criar_menu_inicial() -> void:
 	menu_pausado = false
 	configuracoes_abertas = false
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	var layout := _criar_base_menu("ZONA MORTA", "SOBREVIVA ÀS HORDAS  //  ACESSO DE CAMPO")
-	_criar_botao_menu(layout, "INICIAR RUN", _iniciar_partida)
-	_criar_botao_menu(layout, "CONFIGURAÇÕES", func() -> void: _abrir_configuracoes("inicio"))
-	_criar_botao_menu(layout, "SAIR", _sair_do_jogo)
-	_adicionar_dica_menu(layout, "WASD mover  •  Shift correr  •  C slide  •  1/2 armas  •  Mouse mirar  •  R recarregar")
+	var layout := _criar_base_menu("EXTERMINATOR", "DUST ALLEY  //  DEFESA DE BASE — MODO HORDA")
+	_criar_botao_menu(layout, "COMEÇAR A BAGUNÇA", _iniciar_partida)
+	_criar_botao_menu(layout, "OPÇÕES", func() -> void: _abrir_configuracoes("inicio"))
+	_criar_botao_menu(layout, "DESISTIR (COVARDE)", _sair_do_jogo)
+	_adicionar_dica_menu(layout, "WASD mover  •  Shift correr  •  C deslizar  •  1/2 armas  •  Mouse mirar  •  R recarregar")
 
 # Cria a camada e o painel central compartilhados pelos menus do jogo.
 func _criar_base_menu(titulo_texto: String, subtitulo_texto: String) -> VBoxContainer:
@@ -378,29 +382,27 @@ func _criar_base_menu(titulo_texto: String, subtitulo_texto: String) -> VBoxCont
 	menu_atual.process_mode = Node.PROCESS_MODE_ALWAYS
 	menu_atual.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(menu_atual)
-	var fundo := ColorRect.new()
-	fundo.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	fundo.color = COR_FUNDO_MENU
-	fundo.mouse_filter = Control.MOUSE_FILTER_STOP
-	menu_atual.add_child(fundo)
+	_adicionar_fundo_estilizado(menu_atual, 0.08)
 	var painel := PanelContainer.new()
 	painel.anchor_left = 0.5
 	painel.anchor_top = 0.5
 	painel.anchor_right = 0.5
 	painel.anchor_bottom = 0.5
-	painel.offset_left = -230
-	painel.offset_top = -230
-	painel.offset_right = 230
-	painel.offset_bottom = 230
-	_estilizar_painel(painel)
+	painel.offset_left = -270
+	painel.offset_top = -270 if titulo_texto == "EXTERMINATOR" else -310
+	painel.offset_right = 270
+	painel.offset_bottom = 270 if titulo_texto == "EXTERMINATOR" else 310
+	_estilizar_painel_menu(painel)
 	menu_atual.add_child(painel)
 	var layout := VBoxContainer.new()
 	layout.alignment = BoxContainer.ALIGNMENT_CENTER
 	layout.add_theme_constant_override("separation", 12)
 	painel.add_child(layout)
-	var titulo := _criar_label(titulo_texto, 30)
+	var tamanho_titulo := 48 if titulo_texto == "EXTERMINATOR" else 40
+	var titulo := _criar_label(titulo_texto, tamanho_titulo)
 	titulo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	titulo.add_theme_color_override("font_color", COR_DESTAQUE)
+	titulo.add_theme_font_override("font", FONT_DISPLAY)
 	layout.add_child(titulo)
 	var subtitulo := _criar_label(subtitulo_texto, 12)
 	subtitulo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -415,26 +417,37 @@ func _criar_base_menu(titulo_texto: String, subtitulo_texto: String) -> VBoxCont
 func _criar_botao_menu(layout: VBoxContainer, texto: String, acao: Callable) -> Button:
 	var botao := Button.new()
 	botao.text = texto
-	botao.custom_minimum_size = Vector2(300, 48)
+	botao.custom_minimum_size = Vector2(270, 90)
 	botao.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	botao.add_theme_font_size_override("font_size", 15)
 	botao.add_theme_color_override("font_color", Color("edf6f2"))
 	botao.add_theme_color_override("font_hover_color", COR_DESTAQUE)
-	var normal := StyleBoxFlat.new()
-	normal.bg_color = Color(0.04, 0.09, 0.1, 0.45)
-	normal.border_color = Color(0.42, 0.78, 0.7, 0.45)
-	normal.set_border_width_all(1)
-	normal.border_width_left = 3
-	normal.set_corner_radius_all(8)
-	var hover := normal.duplicate() as StyleBoxFlat
-	hover.bg_color = Color(0.16, 0.36, 0.31, 0.7)
-	hover.border_color = COR_DESTAQUE
-	botao.add_theme_stylebox_override("normal", normal)
-	botao.add_theme_stylebox_override("hover", hover)
-	botao.add_theme_stylebox_override("pressed", hover)
+	_estilizar_botao_menu(botao)
 	botao.pressed.connect(acao)
 	layout.add_child(botao)
 	return botao
+
+func _estilizar_botao_menu(botao: Button) -> void:
+	var normal := StyleBoxTexture.new()
+	normal.texture = _textura_botao_recortada(TEXTURA_BOTAO_MENU)
+	normal.content_margin_left = 14
+	normal.content_margin_right = 14
+	normal.content_margin_top = 8
+	normal.content_margin_bottom = 8
+	var hover := normal.duplicate() as StyleBoxTexture
+	hover.texture = _textura_botao_recortada(TEXTURA_BOTAO_HOVER)
+	var pressionado := normal.duplicate() as StyleBoxTexture
+	pressionado.modulate_color = Color(0.78, 0.78, 0.72, 1)
+	botao.add_theme_stylebox_override("normal", normal)
+	botao.add_theme_stylebox_override("hover", hover)
+	botao.add_theme_stylebox_override("pressed", pressionado)
+	botao.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+
+func _textura_botao_recortada(textura: Texture2D) -> AtlasTexture:
+	var recorte := AtlasTexture.new()
+	recorte.atlas = textura
+	recorte.region = Rect2(64, 130, 1152, 460)
+	return recorte
 
 # Texto auxiliar para controles e atalhos sem criar mais um painel visual.
 func _adicionar_dica_menu(layout: VBoxContainer, texto: String) -> void:
@@ -443,6 +456,20 @@ func _adicionar_dica_menu(layout: VBoxContainer, texto: String) -> void:
 	dica.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	dica.add_theme_color_override("font_color", Color("91aaa8"))
 	layout.add_child(dica)
+
+func _adicionar_fundo_estilizado(alvo: Control, escurecimento: float) -> void:
+	var arte := TextureRect.new()
+	arte.texture = TEXTURA_MENU
+	arte.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	arte.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	arte.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	arte.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	alvo.add_child(arte)
+	var sombra := ColorRect.new()
+	sombra.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	sombra.color = Color(0.08, 0.1, 0.045, escurecimento)
+	sombra.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	alvo.add_child(sombra)
 
 # Inicia a run e libera o mouse para o controle de câmera.
 func _iniciar_partida() -> void:
@@ -460,11 +487,11 @@ func _abrir_menu_pausa() -> void:
 	menu_pausado = true
 	get_tree().paused = true
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-	var layout := _criar_base_menu("JOGO PAUSADO", "A EXPEDIÇÃO ESTÁ EM ESPERA")
-	_criar_botao_menu(layout, "CONTINUAR", _fechar_menu_pausa)
-	_criar_botao_menu(layout, "CONFIGURAÇÕES", func() -> void: _abrir_configuracoes("pausa"))
+	var layout := _criar_base_menu("PAUSA PRA RESPIRAR", "OS ZUMBIS TAMBÉM PRECISAM DE UM INTERVALO")
+	_criar_botao_menu(layout, "VOLTAR PRA BRIGA", _fechar_menu_pausa)
+	_criar_botao_menu(layout, "OPÇÕES", func() -> void: _abrir_configuracoes("pausa"))
 	_criar_botao_menu(layout, "VOLTAR AO INÍCIO", _voltar_ao_inicio)
-	_criar_botao_menu(layout, "SAIR", _sair_do_jogo)
+	_criar_botao_menu(layout, "DESISTIR (COVARDE)", _sair_do_jogo)
 	_adicionar_dica_menu(layout, "Pressione ESC para continuar")
 
 # Fecha a pausa e devolve a captura do mouse ao jogo.
@@ -557,19 +584,25 @@ func _sair_do_jogo() -> void:
 
 # Tela final com resumo da run e botão para iniciar outra expedição.
 func mostrar_fim_de_jogo(numero_onda: int) -> void:
+	_mostrar_tela_final(numero_onda, false)
+
+func mostrar_vitoria(numero_onda: int) -> void:
+	_mostrar_tela_final(numero_onda, true)
+
+func _mostrar_tela_final(numero_onda: int, venceu: bool) -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	fim_de_jogo = true
-	mensagem.text = "SINAL PERDIDO  //  VOCE ALCANCOU A RONDA %02d" % numero_onda
-	mensagem.add_theme_color_override("font_color", Color("ff6d62"))
+	if venceu:
+		mensagem.text = "MISSÃO CUMPRIDA!"
+	else:
+		mensagem.text = "SINAL PERDIDO  //  RONDA %02d" % numero_onda
+	mensagem.add_theme_color_override("font_color", COR_DESTAQUE if venceu else Color("e56b4f"))
 	var tela := Control.new()
 	tela.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	tela.process_mode = Node.PROCESS_MODE_ALWAYS
 	tela.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(tela)
-	var fundo := ColorRect.new()
-	fundo.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	fundo.color = Color(0.012, 0.018, 0.02, 0.78)
-	tela.add_child(fundo)
+	_adicionar_fundo_estilizado(tela, 0.58)
 	var painel := PanelContainer.new()
 	painel.anchor_left = 0.5
 	painel.anchor_top = 0.5
@@ -579,22 +612,30 @@ func mostrar_fim_de_jogo(numero_onda: int) -> void:
 	painel.offset_top = -115
 	painel.offset_right = 220
 	painel.offset_bottom = 115
-	_estilizar_painel(painel)
+	_estilizar_painel_menu(painel)
 	tela.add_child(painel)
 	var layout := VBoxContainer.new()
 	layout.alignment = BoxContainer.ALIGNMENT_CENTER
 	layout.add_theme_constant_override("separation", 18)
 	painel.add_child(layout)
-	var titulo := _criar_label("FIM DA EXPEDICAO", 23)
+	var titulo := _criar_label("MISSÃO CUMPRIDA!" if venceu else "FIM DA EXPEDIÇÃO", 40)
 	titulo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	titulo.add_theme_color_override("font_color", Color("ff766d"))
+	titulo.add_theme_color_override("font_color", COR_DESTAQUE if venceu else Color("e56b4f"))
+	titulo.add_theme_font_override("font", FONT_DISPLAY)
 	layout.add_child(titulo)
-	var resumo := _criar_label("Voce sobreviveu ate a ronda %02d." % numero_onda, 15)
+	var texto_resumo := "Você sobreviveu até a ronda %02d." % numero_onda
+	if venceu:
+		texto_resumo = "Você chegou até a ronda %02d. Os zumbis pediram revanche." % numero_onda
+	var resumo := _criar_label(texto_resumo, 15)
 	resumo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	layout.add_child(resumo)
 	var reiniciar := Button.new()
-	reiniciar.text = "INICIAR NOVA RUN"
+	reiniciar.text = "TENTAR DE NOVO"
 	reiniciar.custom_minimum_size = Vector2(240, 46)
+	reiniciar.add_theme_font_size_override("font_size", 15)
+	reiniciar.add_theme_color_override("font_color", Color("edf6f2"))
+	reiniciar.add_theme_color_override("font_hover_color", COR_DESTAQUE)
+	_estilizar_botao_menu(reiniciar)
 	reiniciar.pressed.connect(_reiniciar_run)
 	layout.add_child(reiniciar)
 
@@ -622,7 +663,7 @@ func _draw() -> void:
 	var centro := size * 0.5
 	var gap := 7.0 + dispersao_mira * 5.0
 	var comprimento := 7.0
-	var cor := Color(0.77, 0.96, 0.91, 0.95)
+	var cor := Color(0.86, 0.78, 0.4, 0.95)
 	var espessura := 2.0
 	# Retículo de quatro segmentos: sua abertura mostra a dispersão atual da arma.
 	draw_line(centro + Vector2(-gap - comprimento, 0), centro + Vector2(-gap, 0), cor, espessura, true)
@@ -663,41 +704,65 @@ func _criar_label(texto: String, tamanho: int) -> Label:
 	return label
 
 func _estilizar_painel(painel: PanelContainer) -> void:
-	var estilo := StyleBoxFlat.new()
-	estilo.bg_color = Color(0.025, 0.055, 0.06, 0.42)
-	estilo.border_color = Color(0.42, 0.78, 0.7, 0.38)
-	estilo.set_border_width_all(1)
-	estilo.set_corner_radius_all(14)
-	estilo.content_margin_left = 12
-	estilo.content_margin_right = 12
-	estilo.content_margin_top = 10
-	estilo.content_margin_bottom = 10
+	var estilo := StyleBoxTexture.new()
+	estilo.texture = TEXTURA_PAINEL_HUD
+	estilo.texture_margin_left = 58
+	estilo.texture_margin_right = 58
+	estilo.texture_margin_top = 52
+	estilo.texture_margin_bottom = 52
+	estilo.modulate_color = Color(0.78, 0.82, 0.66, 0.95)
+	estilo.content_margin_left = 16
+	estilo.content_margin_right = 16
+	estilo.content_margin_top = 12
+	estilo.content_margin_bottom = 12
+	painel.add_theme_stylebox_override("panel", estilo)
+
+func _estilizar_painel_menu(painel: PanelContainer) -> void:
+	var estilo := StyleBoxTexture.new()
+	estilo.texture = TEXTURA_PAINEL_MENU
+	estilo.texture_margin_left = 88
+	estilo.texture_margin_right = 88
+	estilo.texture_margin_top = 88
+	estilo.texture_margin_bottom = 88
+	estilo.modulate_color = Color(0.92, 0.9, 0.82, 0.98)
+	estilo.content_margin_left = 32
+	estilo.content_margin_right = 32
+	estilo.content_margin_top = 28
+	estilo.content_margin_bottom = 28
 	painel.add_theme_stylebox_override("panel", estilo)
 
 func _cor_raridade(raridade: String) -> Color:
 	match raridade:
-		"Incomum": return Color("79d99d")
-		"Raro": return Color("66b9ff")
-		"Epico": return Color("c38aff")
-		"Lendario": return Color("ffc45e")
-	return Color("c4d0cf")
+		"Incomum": return Color("a2b85b")
+		"Raro": return Color("d5b14d")
+		"Epico": return Color("cb7a45")
+		"Lendario": return Color("ffe082")
+	return Color("c6bea0")
 
-func _estilizar_cartao_melhoria(botao: Button, cor: Color) -> void:
-	var normal := StyleBoxFlat.new()
-	normal.bg_color = Color(0.025, 0.05, 0.06, 0.30)
-	normal.border_color = Color(cor.r, cor.g, cor.b, 0.52)
-	normal.set_border_width_all(1)
-	normal.border_width_left = 3
-	normal.set_corner_radius_all(12)
+func _textura_cartao_melhoria(raridade: String) -> Texture2D:
+	match raridade:
+		"Incomum": return preload("res://ui/ui_carta_incomum.jpg")
+		"Raro": return preload("res://ui/ui_carta_rara.jpg")
+		"Epico": return preload("res://ui/ui_carta_epica.jpg")
+		"Lendario": return preload("res://ui/ui_carta_lendaria.jpg")
+	return preload("res://ui/ui_carta_comum.jpg")
+
+func _estilizar_cartao_melhoria(botao: Button, textura: Texture2D) -> void:
+	var normal := StyleBoxTexture.new()
+	normal.texture = textura
+	normal.texture_margin_left = 68
+	normal.texture_margin_right = 68
+	normal.texture_margin_top = 68
+	normal.texture_margin_bottom = 68
+	normal.modulate_color = Color(0.9, 0.93, 0.82, 1.0)
 	normal.content_margin_left = 16
 	normal.content_margin_right = 16
 	normal.content_margin_top = 14
 	normal.content_margin_bottom = 14
-	var hover := normal.duplicate() as StyleBoxFlat
-	hover.bg_color = Color(cor.r, cor.g, cor.b, 0.14)
-	hover.border_color = cor
-	var pressionado := normal.duplicate() as StyleBoxFlat
-	pressionado.bg_color = Color(cor.r, cor.g, cor.b, 0.24)
+	var hover := normal.duplicate() as StyleBoxTexture
+	hover.modulate_color = Color(1, 1, 1, 1)
+	var pressionado := normal.duplicate() as StyleBoxTexture
+	pressionado.modulate_color = Color(0.75, 0.75, 0.65, 1.0)
 	botao.add_theme_stylebox_override("normal", normal)
 	botao.add_theme_stylebox_override("hover", hover)
 	botao.add_theme_stylebox_override("pressed", pressionado)

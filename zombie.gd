@@ -66,64 +66,64 @@ func _criar_corpo() -> void:
 		"corredor":
 			cor_corpo = Color("8c533e")
 			cor_cabeca = Color("b77759")
-			escala = 0.82
+			escala = 0.9
 		"brutamontes":
 			cor_corpo = Color("494d43")
 			cor_cabeca = Color("777b65")
-			escala = 1.35
+			escala = 1.15
 		"cuspidor":
 			cor_corpo = Color("536f5d")
 			cor_cabeca = Color("91a57a")
-			escala = 0.96
+			escala = 1.0
 	scale = Vector3.ONE * escala
 
 	var corpo := MeshInstance3D.new()
 	corpo.name = "Corpo"
 	var malha_corpo := CapsuleMesh.new()
-	malha_corpo.radius = 0.48
-	malha_corpo.height = 1.5
+	malha_corpo.radius = 0.35
+	malha_corpo.height = 1.35
 	corpo.mesh = malha_corpo
-	corpo.position.y = 1.2
+	corpo.position.y = 0.675
 	corpo.material_override = _material(cor_corpo)
 	add_child(corpo)
 	var forma_corpo := CollisionShape3D.new()
 	var capsula := CapsuleShape3D.new()
-	capsula.radius = 0.48
-	capsula.height = 1.5
+	capsula.radius = 0.35
+	capsula.height = 1.8
 	forma_corpo.shape = capsula
-	forma_corpo.position.y = 1.2
+	forma_corpo.position.y = 0.9
 	add_child(forma_corpo)
 
 	var cabeca := MeshInstance3D.new()
 	cabeca.name = "Cabeca"
 	var malha_cabeca := SphereMesh.new()
-	malha_cabeca.radius = 0.42
-	malha_cabeca.height = 0.84
+	malha_cabeca.radius = 0.28
+	malha_cabeca.height = 0.56
 	cabeca.mesh = malha_cabeca
-	cabeca.position.y = 2.42
+	cabeca.position.y = 1.58
 	cabeca.material_override = _material(cor_cabeca)
 	add_child(cabeca)
 	var forma_cabeca := CollisionShape3D.new()
 	var esfera := SphereShape3D.new()
-	esfera.radius = 0.42
+	esfera.radius = 0.28
 	forma_cabeca.shape = esfera
-	forma_cabeca.position.y = 2.42
+	forma_cabeca.position.y = 1.58
 	forma_cabeca.set_meta("zona_acerto", "cabeca")
 	add_child(forma_cabeca)
 
 	for lado in [-1.0, 1.0]:
 		var braco := MeshInstance3D.new()
 		var malha_braco := CapsuleMesh.new()
-		malha_braco.radius = 0.19 if tipo != "brutamontes" else 0.27
-		malha_braco.height = 0.95 if tipo != "brutamontes" else 1.25
+		malha_braco.radius = 0.14 if tipo != "brutamontes" else 0.2
+		malha_braco.height = 0.72 if tipo != "brutamontes" else 0.95
 		braco.mesh = malha_braco
-		braco.position = Vector3(lado * 0.53, 1.32, 0.0)
+		braco.position = Vector3(lado * 0.4, 0.92, 0.0)
 		braco.rotation.z = lado * -0.22
 		braco.material_override = _material(cor_corpo.darkened(0.18))
 		add_child(braco)
 
 	label_vida = Label3D.new()
-	label_vida.position.y = 3.15
+	label_vida.position.y = 2.05
 	label_vida.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	label_vida.pixel_size = 0.009
 	label_vida.font_size = 38
@@ -290,7 +290,7 @@ func _cuspir_acido() -> void:
 	material.emission_energy_multiplier = 1.4
 	projetil.material_override = material
 	get_tree().current_scene.add_child(projetil)
-	projetil.global_position = global_position + Vector3(0.0, 2.15, 0.0)
+	projetil.global_position = global_position + Vector3(0.0, 1.55, 0.0)
 	var destino := alvo.global_position + Vector3(0.0, 1.0, 0.0)
 	var tween := projetil.create_tween()
 	tween.tween_property(projetil, "global_position", destino, 0.5)

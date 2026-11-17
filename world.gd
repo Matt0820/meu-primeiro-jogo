@@ -4,21 +4,66 @@ extends Node3D
 # Ponto de entrada do jogo: world.tscn usa este script no nó raiz "World".
 const SCRIPT_ZUMBI = preload("res://zombie.gd")
 const SCRIPT_DROP = preload("res://loot_pickup.gd")
-const ARENA_LIMITE := 72.0
-
 @onready var jogador: Variant = $player
 @onready var hud: Variant = $player/Aim/HUD
 
 var onda_atual := 0
 var gerador := RandomNumberGenerator.new()
+var corpo_colisao_mapa: StaticBody3D
 
-# Prepara decoração e aguarda o sinal de início emitido pelo menu do HUD.
+# Configura a colisão do GLB e aguarda o sinal de início emitido pelo menu.
 func _ready() -> void:
 	gerador.randomize()
-	_criar_escombros()
+	_configurar_mapa_dust2()
 	# A run só começa quando o jogador confirma no menu principal.
 	get_tree().paused = true
 	_loop_de_hordas.call_deferred()
+
+func _configurar_mapa_dust2() -> void:
+	for nome_legado in ["DesertDistrict", "WorldLimitation"]:
+		var estrutura_legada := get_node_or_null(nome_legado) as Node3D
+		if estrutura_legada:
+			estrutura_legada.visible = false
+			for nodo in estrutura_legada.find_children("*", "StaticBody3D", true, false):
+				var corpo_antigo := nodo as StaticBody3D
+				corpo_antigo.collision_layer = 0
+				corpo_antigo.collision_mask = 0
+
+	var mapa := get_node_or_null("Dust2Map/MapMesh") as Node3D
+	if mapa == null:
+		push_error("A cena GLB do mapa Dust2 não foi carregada.")
+		return
+
+	var faces := _coletar_faces_mapa(mapa, Transform3D.IDENTITY)
+
+	if faces.is_empty():
+		push_error("Não foram encontradas faces para gerar a colisão do mapa Dust2.")
+		return
+
+	var forma_colisao := ConcavePolygonShape3D.new()
+	forma_colisao.set_faces(faces)
+	corpo_colisao_mapa = StaticBody3D.new()
+	corpo_colisao_mapa.name = "Dust2Collision"
+	var colisao := CollisionShape3D.new()
+	colisao.shape = forma_colisao
+	corpo_colisao_mapa.add_child(colisao)
+	$Dust2Map.add_child(corpo_colisao_mapa)
+
+func _coletar_faces_mapa(nodo: Node, transformacao_para_mapa: Transform3D) -> PackedVector3Array:
+	var transformacao_local := transformacao_para_mapa
+	if nodo is Node3D:
+		transformacao_local = transformacao_local * (nodo as Node3D).transform
+
+	var faces := PackedVector3Array()
+	if nodo is MeshInstance3D:
+		var malha := nodo as MeshInstance3D
+		if malha.mesh:
+			for vertice in malha.mesh.get_faces():
+				faces.append(transformacao_local * vertice)
+
+	for filho in nodo.get_children():
+		faces.append_array(_coletar_faces_mapa(filho, transformacao_local))
+	return faces
 
 # Repete as hordas e interrompe o combate entre ondas para oferecer três melhorias.
 func _loop_de_hordas() -> void:
@@ -62,30 +107,41 @@ func _loop_de_hordas() -> void:
 
 # Cria um zumbi configurado para o tipo e a dificuldade da onda atual.
 func _criar_zumbi(tipo: String, numero_onda: int) -> void:
+	var ponto_spawn: Variant = _sortear_ponto_de_entrada()
+	if ponto_spawn == null:
+		return
 	var zumbi := SCRIPT_ZUMBI.new() as CharacterBody3D
 	zumbi.call("configurar", tipo, numero_onda)
-	zumbi.global_position = _sortear_ponto_de_entrada()
 	add_child(zumbi)
+	zumbi.global_position = ponto_spawn
 
-# Escolhe um ponto de entrada nas bordas da arena, distante do jogador.
-func _sortear_ponto_de_entrada() -> Vector3:
-	var melhor_ponto := Vector3.ZERO
-	var maior_distancia := -1.0
-	for tentativa in range(12):
-		var deslocamento := gerador.randf_range(-ARENA_LIMITE, ARENA_LIMITE)
-		var ponto := Vector3.ZERO
-		match gerador.randi_range(0, 3):
-			0: ponto = Vector3(-ARENA_LIMITE, 0.0, deslocamento)
-			1: ponto = Vector3(ARENA_LIMITE, 0.0, deslocamento)
-			2: ponto = Vector3(deslocamento, 0.0, -ARENA_LIMITE)
-			3: ponto = Vector3(deslocamento, 0.0, ARENA_LIMITE)
-		var distancia := Vector2(ponto.x - jogador.global_position.x, ponto.z - jogador.global_position.z).length()
-		if distancia > maior_distancia:
-			maior_distancia = distancia
-			melhor_ponto = ponto
-		if distancia >= 22.0:
-			return ponto
-	return melhor_ponto
+# Busca um piso caminhável próximo para não criar inimigos dentro ou abaixo do mapa.
+func _sortear_ponto_de_entrada() -> Variant:
+	if not is_instance_valid(corpo_colisao_mapa):
+		push_error("A colisão do mapa Dust2 não está pronta para posicionar os zumbis.")
+		return null
+
+	var espaco := get_world_3d().direct_space_state
+	var capsule: CapsuleShape3D = jogador.get_node("player_colision").shape as CapsuleShape3D
+	var altura_piso_jogador: float = jogador.global_position.y - capsule.height * 0.5
+	for tentativa in range(64):
+		var angulo: float = gerador.randf_range(0.0, TAU)
+		var distancia: float = gerador.randf_range(8.0, 14.0)
+		var x: float = jogador.global_position.x + cos(angulo) * distancia
+		var z: float = jogador.global_position.z + sin(angulo) * distancia
+		var consulta := PhysicsRayQueryParameters3D.create(Vector3(x, 15.0, z), Vector3(x, -5.0, z))
+		consulta.exclude = [jogador.get_rid()]
+		var resultado := espaco.intersect_ray(consulta)
+		if resultado.is_empty() or resultado.get("collider") != corpo_colisao_mapa:
+			continue
+		var normal: Vector3 = resultado.get("normal", Vector3.ZERO)
+		var piso: Vector3 = resultado.get("position", Vector3.ZERO)
+		if normal.y < 0.9 or absf(piso.y - altura_piso_jogador) > 2.0:
+			continue
+		return piso + Vector3.UP * 0.05
+
+	push_warning("Não foi encontrado um piso próximo para o surgimento de um zumbi.")
+	return null
 
 # A composição das hordas muda à medida que a run avança.
 func _sortear_tipo_zumbi() -> String:
@@ -161,9 +217,9 @@ func criar_drop(posicao: Vector3, tipo: String) -> void:
 	add_child(drop)
 	drop.global_position = posicao + Vector3(0.0, 0.35, 0.0)
 
-# Adiciona peças visuais de cenário sem colisão para dar leitura à arena.
+# Adiciona entulho visual leve às ruas do mapa.
 func _criar_escombros() -> void:
-	var pontos := [Vector3(-22, 0, -8), Vector3(18, 0, -18), Vector3(30, 0, 12), Vector3(-34, 0, 21), Vector3(5, 0, 43), Vector3(-48, 0, -34), Vector3(49, 0, -42), Vector3(40, 0, 48)]
+	var pontos := [Vector3(-8, 0, -34), Vector3(9, 0, -27), Vector3(-7, 0, -6), Vector3(8, 0, 11), Vector3(-8, 0, 39), Vector3(6, 0, 53), Vector3(-51, 0, -7), Vector3(53, 0, 13)]
 	var rng_visual := RandomNumberGenerator.new()
 	rng_visual.randomize()
 	for ponto in pontos:

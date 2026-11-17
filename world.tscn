@@ -6,9 +6,10 @@
 [ext_resource type="Script" uid="uid://c7vkh51yreah4" path="res://camera_movement_x.gd" id="4_aqk2v"]
 [ext_resource type="Script" uid="uid://cidd40wykosvp" path="res://hud.gd" id="7_hud"]
 [ext_resource type="Script" uid="uid://cg3iuo7w6m3ng" path="res://world.gd" id="8_world"]
-[ext_resource type="ArrayMesh" path="res://Models/Low Poly Soilder Character.obj" id="9_soldier"]
+[ext_resource type="PackedScene" uid="uid://dw8qntoh5m0f0" path="res://Models/Dust2/de_dust2.glb" id="9_dust2"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_036b0"]
+albedo_color = Color(0.55, 0.45, 0.3, 1)
 albedo_texture = ExtResource("1_aqk2v")
 uv1_scale = Vector3(2.67, 2.67, 1)
 
@@ -18,25 +19,20 @@ size = Vector2(160, 160)
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_aqk2v"]
 data = PackedVector3Array(80, 0, 80, -80, 0, 80, 80, 0, -80, -80, 0, 80, -80, 0, -80, 80, 0, -80)
 
-[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_xcng5"]
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_gbfbk"]
 panorama = ExtResource("1_f3sb7")
 
-[sub_resource type="Sky" id="Sky_gbfbk"]
-sky_material = SubResource("PanoramaSkyMaterial_xcng5")
-radiance_size = 4
+[sub_resource type="Sky" id="Sky_pkg7o"]
+sky_material = SubResource("PanoramaSkyMaterial_gbfbk")
 
-[sub_resource type="Environment" id="Environment_pkg7o"]
+[sub_resource type="Environment" id="Environment_dwbse"]
 background_mode = 2
-sky = SubResource("Sky_gbfbk")
-ssr_enabled = true
-ssr_fade_in = 0.14489026
-ssr_fade_out = 0.6830194
-ssr_depth_tolerance = 5.11
-ssao_enabled = true
-ssao_power = 1.7230476
-ssao_horizon = 0.08
-ssil_enabled = true
-ssil_radius = 4.33
+sky = SubResource("Sky_pkg7o")
+ambient_light_color = Color(1, 1, 1, 1)
+ambient_light_energy = 4.4
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_Wall"]
+albedo_color = Color(0.43, 0.36, 0.24, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_grfhh"]
 size = Vector3(170, 8, 5)
@@ -44,7 +40,111 @@ size = Vector3(170, 8, 5)
 [sub_resource type="BoxShape3D" id="BoxShape3D_arena"]
 size = Vector3(170, 8, 5)
 
+[sub_resource type="StandardMaterial3D" id="Material_Street"]
+albedo_color = Color(0.42, 0.34, 0.23, 1)
+
+[sub_resource type="PlaneMesh" id="Road_Main_Z"]
+size = Vector2(22, 150)
+
+[sub_resource type="PlaneMesh" id="Road_Main_X"]
+size = Vector2(150, 18)
+
+[sub_resource type="PlaneMesh" id="Road_Square"]
+size = Vector2(118, 15)
+
+[sub_resource type="StandardMaterial3D" id="Material_Sandstone"]
+albedo_color = Color(0.58, 0.45, 0.29, 1)
+
+[sub_resource type="BoxMesh" id="Building_West_Mesh"]
+size = Vector3(22, 8, 26)
+
+[sub_resource type="BoxShape3D" id="Building_West_Shape"]
+size = Vector3(22, 8, 26)
+
+[sub_resource type="StandardMaterial3D" id="Material_Concrete"]
+albedo_color = Color(0.39, 0.37, 0.3, 1)
+
+[sub_resource type="BoxMesh" id="Building_Roof_Mesh"]
+size = Vector3(23.4, 0.55, 27.4)
+
+[sub_resource type="StandardMaterial3D" id="Material_Window"]
+albedo_color = Color(0.16, 0.17, 0.13, 1)
+
+[sub_resource type="BoxMesh" id="Window_Mesh"]
+size = Vector3(0.16, 1.3, 2)
+
+[sub_resource type="StandardMaterial3D" id="Material_Stucco"]
+albedo_color = Color(0.68, 0.54, 0.35, 1)
+
+[sub_resource type="BoxMesh" id="Building_North_East_Mesh"]
+size = Vector3(22, 9.5, 26)
+
+[sub_resource type="BoxShape3D" id="Building_North_East_Shape"]
+size = Vector3(22, 9.5, 26)
+
+[sub_resource type="BoxMesh" id="Building_South_West_Mesh"]
+size = Vector3(22, 7, 26)
+
+[sub_resource type="BoxShape3D" id="Building_South_West_Shape"]
+size = Vector3(22, 7, 26)
+
+[sub_resource type="BoxMesh" id="Building_South_East_Mesh"]
+size = Vector3(22, 8.5, 26)
+
+[sub_resource type="BoxShape3D" id="Building_South_East_Shape"]
+size = Vector3(22, 8.5, 26)
+
+[sub_resource type="BoxMesh" id="Building_Side_Mesh"]
+size = Vector3(10, 6, 27)
+
+[sub_resource type="BoxShape3D" id="Building_Side_Shape"]
+size = Vector3(10, 6, 27)
+
+[sub_resource type="BoxMesh" id="Building_Side_Roof_Mesh"]
+size = Vector3(11.4, 0.55, 28.4)
+
+[sub_resource type="StandardMaterial3D" id="Material_Wood"]
+albedo_color = Color(0.35, 0.27, 0.16, 1)
+
+[sub_resource type="BoxMesh" id="Cover_Long_Mesh"]
+size = Vector3(9, 1.35, 1.2)
+
+[sub_resource type="BoxShape3D" id="Cover_Long_Shape"]
+size = Vector3(9, 1.35, 1.2)
+
+[sub_resource type="BoxMesh" id="Cover_Side_Mesh"]
+size = Vector3(1.2, 1.45, 8)
+
+[sub_resource type="BoxShape3D" id="Cover_Side_Shape"]
+size = Vector3(1.2, 1.45, 8)
+
+[sub_resource type="BoxMesh" id="Cover_Short_Mesh"]
+size = Vector3(8, 1.2, 1.1)
+
+[sub_resource type="BoxShape3D" id="Cover_Short_Shape"]
+size = Vector3(8, 1.2, 1.1)
+
+[sub_resource type="BoxMesh" id="Cover_Shorter_Mesh"]
+size = Vector3(7, 1.2, 1.1)
+
+[sub_resource type="BoxShape3D" id="Cover_Shorter_Shape"]
+size = Vector3(7, 1.2, 1.1)
+
+[sub_resource type="BoxMesh" id="Crate_Lower_Mesh"]
+size = Vector3(2.2, 1.7, 2.2)
+
+[sub_resource type="BoxShape3D" id="Crate_Lower_Shape"]
+size = Vector3(2.2, 1.7, 2.2)
+
+[sub_resource type="BoxMesh" id="Crate_Upper_Mesh"]
+size = Vector3(1.7, 1.3, 1.7)
+
+[sub_resource type="BoxShape3D" id="Crate_Upper_Shape"]
+size = Vector3(1.7, 1.3, 1.7)
+
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_x13xl"]
+radius = 0.35
+height = 1.8
 
 [sub_resource type="BoxMesh" id="BoxMesh_g8veb"]
 size = Vector3(1, 1, 2.993164)
@@ -53,7 +153,8 @@ size = Vector3(1, 1, 2.993164)
 script = ExtResource("8_world")
 
 [node name="Ground" type="MeshInstance3D" parent="." unique_id=498024773]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.7683716e-07, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6, 0)
+visible = false
 material_override = SubResource("StandardMaterial3D_036b0")
 mesh = SubResource("PlaneMesh_g8veb")
 metadata/_edit_group_ = true
@@ -63,28 +164,26 @@ metadata/_edit_group_ = true
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground/StaticBody3D" unique_id=621084415]
 shape = SubResource("ConcavePolygonShape3D_aqk2v")
 
-[node name="Ground2" type="MeshInstance3D" parent="." unique_id=1379645534]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.7683716e-07, 0)
-material_override = SubResource("StandardMaterial3D_036b0")
-mesh = SubResource("PlaneMesh_g8veb")
-metadata/_edit_group_ = true
-
-[node name="StaticBody3D" type="StaticBody3D" parent="Ground2" unique_id=764841774]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground2/StaticBody3D" unique_id=1809830533]
-shape = SubResource("ConcavePolygonShape3D_aqk2v")
-
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=2123655157]
 transform = Transform3D(0.6512471, -0.5422574, -0.5308806, 0.17492591, -0.5734623, 0.8003386, -0.7384296, -0.61408293, -0.2786108, 56.59191, 76.303986, 68.71872)
+light_color = Color(1, 0.69, 0.39, 1)
+light_energy = 1.15
 shadow_enabled = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1757005576]
-environment = SubResource("Environment_pkg7o")
+environment = SubResource("Environment_dwbse")
+
+[node name="Dust2Map" type="Node3D" parent="."]
+
+[node name="MapMesh" parent="Dust2Map" instance=ExtResource("9_dust2")]
+position = Vector3(4.26667, -1005.44, -1217.0663)
 
 [node name="WorldLimitation" type="Node3D" parent="." unique_id=1092559861]
+visible = false
 
 [node name="Wall" type="MeshInstance3D" parent="WorldLimitation" unique_id=514804311]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.7, 82.5)
+material_override = SubResource("StandardMaterial3D_Wall")
 mesh = SubResource("BoxMesh_grfhh")
 metadata/_edit_group_ = true
 
@@ -95,6 +194,7 @@ shape = SubResource("BoxShape3D_arena")
 
 [node name="Wall_2" type="MeshInstance3D" parent="WorldLimitation" unique_id=831747866]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.7, -82.5)
+material_override = SubResource("StandardMaterial3D_Wall")
 mesh = SubResource("BoxMesh_grfhh")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="WorldLimitation/Wall_2" unique_id=2118338694]
@@ -104,6 +204,7 @@ shape = SubResource("BoxShape3D_arena")
 
 [node name="Wall_3" type="MeshInstance3D" parent="WorldLimitation" unique_id=1884414079]
 transform = Transform3D(1.3113416e-07, 0, -1, 0, 1, 0, 1, 0, 1.3113416e-07, -82.5, 3.7, 0)
+material_override = SubResource("StandardMaterial3D_Wall")
 mesh = SubResource("BoxMesh_grfhh")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="WorldLimitation/Wall_3" unique_id=1849684114]
@@ -113,6 +214,7 @@ shape = SubResource("BoxShape3D_arena")
 
 [node name="Wall_4" type="MeshInstance3D" parent="WorldLimitation" unique_id=1100839184]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 82.5, 3.7, 0)
+material_override = SubResource("StandardMaterial3D_Wall")
 mesh = SubResource("BoxMesh_grfhh")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="WorldLimitation/Wall_4" unique_id=1116479528]
@@ -120,20 +222,363 @@ mesh = SubResource("BoxMesh_grfhh")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WorldLimitation/Wall_4/StaticBody3D" unique_id=234187706]
 shape = SubResource("BoxShape3D_arena")
 
+[node name="DesertDistrict" type="Node3D" parent="." unique_id=1749516218]
+
+[node name="MainStreetNorthSouth" type="MeshInstance3D" parent="DesertDistrict" unique_id=134806825]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.012, 0)
+material_override = SubResource("Material_Street")
+mesh = SubResource("Road_Main_Z")
+
+[node name="MainStreetCrossing" type="MeshInstance3D" parent="DesertDistrict" unique_id=49517103]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.014, 0)
+material_override = SubResource("Material_Street")
+mesh = SubResource("Road_Main_X")
+
+[node name="NorthMarketRoad" type="MeshInstance3D" parent="DesertDistrict" unique_id=2108660570]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.016, -51)
+material_override = SubResource("Material_Street")
+mesh = SubResource("Road_Square")
+
+[node name="SouthMarketRoad" type="MeshInstance3D" parent="DesertDistrict" unique_id=1114444587]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.016, 51)
+material_override = SubResource("Material_Street")
+mesh = SubResource("Road_Square")
+
+[node name="NorthWestBuilding" type="StaticBody3D" parent="DesertDistrict" unique_id=922774769]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35, 4, -42)
+
+[node name="Mesh" type="MeshInstance3D" parent="DesertDistrict/NorthWestBuilding" unique_id=459651544]
+material_override = SubResource("Material_Sandstone")
+mesh = SubResource("Building_West_Mesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DesertDistrict/NorthWestBuilding" unique_id=631407805]
+shape = SubResource("Building_West_Shape")
+
+[node name="Roof" type="MeshInstance3D" parent="DesertDistrict" unique_id=2121338932]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35, 8.28, -42)
+material_override = SubResource("Material_Concrete")
+mesh = SubResource("Building_Roof_Mesh")
+
+[node name="NorthWestWindowA" type="MeshInstance3D" parent="DesertDistrict" unique_id=1943653340]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.91, 3.8, -49.02)
+material_override = SubResource("Material_Window")
+mesh = SubResource("Window_Mesh")
+
+[node name="NorthWestWindowB" type="MeshInstance3D" parent="DesertDistrict" unique_id=747371355]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.91, 3.8, -34.98)
+material_override = SubResource("Material_Window")
+mesh = SubResource("Window_Mesh")
+
+[node name="NorthEastBuilding" type="StaticBody3D" parent="DesertDistrict" unique_id=229585376]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35, 4.75, -42)
+
+[node name="Mesh" type="MeshInstance3D" parent="DesertDistrict/NorthEastBuilding" unique_id=585374043]
+material_override = SubResource("Material_Stucco")
+mesh = SubResource("Building_North_East_Mesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DesertDistrict/NorthEastBuilding" unique_id=1841293328]
+shape = SubResource("Building_North_East_Shape")
+
+[node name="Roof2" type="MeshInstance3D" parent="DesertDistrict" unique_id=347087723]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35, 9.78, -42)
+material_override = SubResource("Material_Concrete")
+mesh = SubResource("Building_Roof_Mesh")
+
+[node name="NorthEastWindowA" type="MeshInstance3D" parent="DesertDistrict" unique_id=201506464]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.91, 3.8, -49.02)
+material_override = SubResource("Material_Window")
+mesh = SubResource("Window_Mesh")
+
+[node name="NorthEastWindowB" type="MeshInstance3D" parent="DesertDistrict" unique_id=985203236]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.91, 3.8, -34.98)
+material_override = SubResource("Material_Window")
+mesh = SubResource("Window_Mesh")
+
+[node name="SouthWestBuilding" type="StaticBody3D" parent="DesertDistrict" unique_id=2088743482]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35, 3.5, 42)
+
+[node name="Mesh" type="MeshInstance3D" parent="DesertDistrict/SouthWestBuilding" unique_id=224299285]
+material_override = SubResource("Material_Stucco")
+mesh = SubResource("Building_South_West_Mesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DesertDistrict/SouthWestBuilding" unique_id=334555378]
+shape = SubResource("Building_South_West_Shape")
+
+[node name="Roof3" type="MeshInstance3D" parent="DesertDistrict" unique_id=539270545]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35, 7.28, 42)
+material_override = SubResource("Material_Concrete")
+mesh = SubResource("Building_Roof_Mesh")
+
+[node name="SouthWestWindowA" type="MeshInstance3D" parent="DesertDistrict" unique_id=922601607]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.91, 3.8, 34.98)
+material_override = SubResource("Material_Window")
+mesh = SubResource("Window_Mesh")
+
+[node name="SouthWestWindowB" type="MeshInstance3D" parent="DesertDistrict" unique_id=1987500836]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23.91, 3.8, 49.02)
+material_override = SubResource("Material_Window")
+mesh = SubResource("Window_Mesh")
+
+[node name="SouthEastBuilding" type="StaticBody3D" parent="DesertDistrict" unique_id=795850099]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35, 4.25, 42)
+
+[node name="Mesh" type="MeshInstance3D" parent="DesertDistrict/SouthEastBuilding" unique_id=970407466]
+material_override = SubResource("Material_Sandstone")
+mesh = SubResource("Building_South_East_Mesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DesertDistrict/SouthEastBuilding" unique_id=2070142002]
+shape = SubResource("Building_South_East_Shape")
+
+[node name="Roof4" type="MeshInstance3D" parent="DesertDistrict" unique_id=235130615]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 35, 9.03, 42)
+material_override = SubResource("Material_Concrete")
+mesh = SubResource("Building_Roof_Mesh")
+
+[node name="SouthEastWindowA" type="MeshInstance3D" parent="DesertDistrict" unique_id=1027844371]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.91, 3.8, 34.98)
+material_override = SubResource("Material_Window")
+mesh = SubResource("Window_Mesh")
+
+[node name="SouthEastWindowB" type="MeshInstance3D" parent="DesertDistrict" unique_id=281027771]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.91, 3.8, 49.02)
+material_override = SubResource("Material_Window")
+mesh = SubResource("Window_Mesh")
+
+[node name="WestSideBlock" type="StaticBody3D" parent="DesertDistrict" unique_id=1602046633]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -53, 3, 0)
+
+[node name="Mesh" type="MeshInstance3D" parent="DesertDistrict/WestSideBlock" unique_id=885566958]
+material_override = SubResource("Material_Concrete")
+mesh = SubResource("Building_Side_Mesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DesertDistrict/WestSideBlock" unique_id=537872887]
+shape = SubResource("Building_Side_Shape")
+
+[node name="Roof5" type="MeshInstance3D" parent="DesertDistrict" unique_id=808332946]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -53, 6.28, 0)
+material_override = SubResource("Material_Stucco")
+mesh = SubResource("Building_Side_Roof_Mesh")
+
+[node name="WestBlockWindowA" type="MeshInstance3D" parent="DesertDistrict" unique_id=243455307]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -47.91, 3, -7)
+material_override = SubResource("Material_Window")
+mesh = SubResource("Window_Mesh")
+
+[node name="WestBlockWindowB" type="MeshInstance3D" parent="DesertDistrict" unique_id=1716759419]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -47.91, 3, 7)
+material_override = SubResource("Material_Window")
+mesh = SubResource("Window_Mesh")
+
+[node name="EastSideBlock" type="StaticBody3D" parent="DesertDistrict" unique_id=642596074]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 53, 3, 0)
+
+[node name="Mesh" type="MeshInstance3D" parent="DesertDistrict/EastSideBlock" unique_id=99996516]
+material_override = SubResource("Material_Concrete")
+mesh = SubResource("Building_Side_Mesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DesertDistrict/EastSideBlock" unique_id=560529890]
+shape = SubResource("Building_Side_Shape")
+
+[node name="Roof6" type="MeshInstance3D" parent="DesertDistrict" unique_id=1702244974]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 53, 6.28, 0)
+material_override = SubResource("Material_Stucco")
+mesh = SubResource("Building_Side_Roof_Mesh")
+
+[node name="EastBlockWindowA" type="MeshInstance3D" parent="DesertDistrict" unique_id=863765761]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.91, 3, -7)
+material_override = SubResource("Material_Window")
+mesh = SubResource("Window_Mesh")
+
+[node name="EastBlockWindowB" type="MeshInstance3D" parent="DesertDistrict" unique_id=586824551]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.91, 3, 7)
+material_override = SubResource("Material_Window")
+mesh = SubResource("Window_Mesh")
+
+[node name="CentralCoverWest" type="StaticBody3D" parent="DesertDistrict" unique_id=159710501]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 0.675, -18)
+
+[node name="Mesh" type="MeshInstance3D" parent="DesertDistrict/CentralCoverWest" unique_id=696100268]
+material_override = SubResource("Material_Wood")
+mesh = SubResource("Cover_Long_Mesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DesertDistrict/CentralCoverWest" unique_id=933939450]
+shape = SubResource("Cover_Long_Shape")
+
+[node name="CentralCoverEast" type="StaticBody3D" parent="DesertDistrict" unique_id=1246954924]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0.675, 17)
+
+[node name="Mesh" type="MeshInstance3D" parent="DesertDistrict/CentralCoverEast" unique_id=367901891]
+material_override = SubResource("Material_Wood")
+mesh = SubResource("Cover_Long_Mesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DesertDistrict/CentralCoverEast" unique_id=1915905174]
+shape = SubResource("Cover_Long_Shape")
+
+[node name="WestCover" type="StaticBody3D" parent="DesertDistrict" unique_id=181631950]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26, 0.725, 4)
+
+[node name="Mesh" type="MeshInstance3D" parent="DesertDistrict/WestCover" unique_id=1835563910]
+material_override = SubResource("Material_Wood")
+mesh = SubResource("Cover_Side_Mesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DesertDistrict/WestCover" unique_id=737512967]
+shape = SubResource("Cover_Side_Shape")
+
+[node name="EastCover" type="StaticBody3D" parent="DesertDistrict" unique_id=2038474518]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27, 0.725, -5)
+
+[node name="Mesh" type="MeshInstance3D" parent="DesertDistrict/EastCover" unique_id=351675703]
+material_override = SubResource("Material_Wood")
+mesh = SubResource("Cover_Side_Mesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DesertDistrict/EastCover" unique_id=2104498835]
+shape = SubResource("Cover_Side_Shape")
+
+[node name="NorthCoverA" type="StaticBody3D" parent="DesertDistrict" unique_id=722792233]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17, 0.6, -54)
+
+[node name="Mesh" type="MeshInstance3D" parent="DesertDistrict/NorthCoverA" unique_id=393520743]
+material_override = SubResource("Material_Wood")
+mesh = SubResource("Cover_Short_Mesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DesertDistrict/NorthCoverA" unique_id=483055027]
+shape = SubResource("Cover_Short_Shape")
+
+[node name="SouthCoverA" type="StaticBody3D" parent="DesertDistrict" unique_id=1098946199]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19, 0.6, 54)
+
+[node name="Mesh" type="MeshInstance3D" parent="DesertDistrict/SouthCoverA" unique_id=935184402]
+material_override = SubResource("Material_Wood")
+mesh = SubResource("Cover_Short_Mesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DesertDistrict/SouthCoverA" unique_id=215085740]
+shape = SubResource("Cover_Short_Shape")
+
+[node name="NorthCoverB" type="StaticBody3D" parent="DesertDistrict" unique_id=729879739]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19, 0.6, -52)
+
+[node name="Mesh" type="MeshInstance3D" parent="DesertDistrict/NorthCoverB" unique_id=968319031]
+material_override = SubResource("Material_Wood")
+mesh = SubResource("Cover_Shorter_Mesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DesertDistrict/NorthCoverB" unique_id=275927509]
+shape = SubResource("Cover_Shorter_Shape")
+
+[node name="SouthCoverB" type="StaticBody3D" parent="DesertDistrict" unique_id=1991394482]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17, 0.6, 52)
+
+[node name="Mesh" type="MeshInstance3D" parent="DesertDistrict/SouthCoverB" unique_id=723523603]
+material_override = SubResource("Material_Wood")
+mesh = SubResource("Cover_Shorter_Mesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DesertDistrict/SouthCoverB" unique_id=1886144880]
+shape = SubResource("Cover_Shorter_Shape")
+
+[node name="CrateStackNorthWest" type="Node3D" parent="DesertDistrict" unique_id=1334426152]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, -30)
+
+[node name="Lower" type="StaticBody3D" parent="DesertDistrict/CrateStackNorthWest" unique_id=232728495]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
+
+[node name="Mesh" type="MeshInstance3D" parent="DesertDistrict/CrateStackNorthWest/Lower" unique_id=512729826]
+material_override = SubResource("Material_Wood")
+mesh = SubResource("Crate_Lower_Mesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DesertDistrict/CrateStackNorthWest/Lower" unique_id=199473526]
+shape = SubResource("Crate_Lower_Shape")
+
+[node name="Upper" type="StaticBody3D" parent="DesertDistrict/CrateStackNorthWest" unique_id=410829382]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.15, 2.35, 0.1)
+
+[node name="Mesh" type="MeshInstance3D" parent="DesertDistrict/CrateStackNorthWest/Upper" unique_id=797116823]
+material_override = SubResource("Material_Wood")
+mesh = SubResource("Crate_Upper_Mesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DesertDistrict/CrateStackNorthWest/Upper" unique_id=1689907874]
+shape = SubResource("Crate_Upper_Shape")
+
+[node name="CrateStackNorthEast" type="Node3D" parent="DesertDistrict" unique_id=812709881]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, -30)
+
+[node name="Lower" type="StaticBody3D" parent="DesertDistrict/CrateStackNorthEast" unique_id=1355223329]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
+
+[node name="Mesh" type="MeshInstance3D" parent="DesertDistrict/CrateStackNorthEast/Lower" unique_id=376883470]
+material_override = SubResource("Material_Wood")
+mesh = SubResource("Crate_Lower_Mesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DesertDistrict/CrateStackNorthEast/Lower" unique_id=924422699]
+shape = SubResource("Crate_Lower_Shape")
+
+[node name="Upper" type="StaticBody3D" parent="DesertDistrict/CrateStackNorthEast" unique_id=1368703430]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.15, 2.35, 0.1)
+
+[node name="Mesh" type="MeshInstance3D" parent="DesertDistrict/CrateStackNorthEast/Upper" unique_id=1542265671]
+material_override = SubResource("Material_Wood")
+mesh = SubResource("Crate_Upper_Mesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DesertDistrict/CrateStackNorthEast/Upper" unique_id=874109555]
+shape = SubResource("Crate_Upper_Shape")
+
+[node name="CrateStackSouthWest" type="Node3D" parent="DesertDistrict" unique_id=1211761519]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, 30)
+
+[node name="Lower" type="StaticBody3D" parent="DesertDistrict/CrateStackSouthWest" unique_id=665510826]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
+
+[node name="Mesh" type="MeshInstance3D" parent="DesertDistrict/CrateStackSouthWest/Lower" unique_id=231421028]
+material_override = SubResource("Material_Wood")
+mesh = SubResource("Crate_Lower_Mesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DesertDistrict/CrateStackSouthWest/Lower" unique_id=1229881019]
+shape = SubResource("Crate_Lower_Shape")
+
+[node name="Upper" type="StaticBody3D" parent="DesertDistrict/CrateStackSouthWest" unique_id=1881149355]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.15, 2.35, 0.1)
+
+[node name="Mesh" type="MeshInstance3D" parent="DesertDistrict/CrateStackSouthWest/Upper" unique_id=1728176980]
+material_override = SubResource("Material_Wood")
+mesh = SubResource("Crate_Upper_Mesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DesertDistrict/CrateStackSouthWest/Upper" unique_id=661077869]
+shape = SubResource("Crate_Upper_Shape")
+
+[node name="CrateStackSouthEast" type="Node3D" parent="DesertDistrict" unique_id=1068021609]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 30)
+
+[node name="Lower" type="StaticBody3D" parent="DesertDistrict/CrateStackSouthEast" unique_id=185620559]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
+
+[node name="Mesh" type="MeshInstance3D" parent="DesertDistrict/CrateStackSouthEast/Lower" unique_id=741172238]
+material_override = SubResource("Material_Wood")
+mesh = SubResource("Crate_Lower_Mesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DesertDistrict/CrateStackSouthEast/Lower" unique_id=1360462315]
+shape = SubResource("Crate_Lower_Shape")
+
+[node name="Upper" type="StaticBody3D" parent="DesertDistrict/CrateStackSouthEast" unique_id=1297949318]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.15, 2.35, 0.1)
+
+[node name="Mesh" type="MeshInstance3D" parent="DesertDistrict/CrateStackSouthEast/Upper" unique_id=147342005]
+material_override = SubResource("Material_Wood")
+mesh = SubResource("Crate_Upper_Mesh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DesertDistrict/CrateStackSouthEast/Upper" unique_id=2136011553]
+shape = SubResource("Crate_Upper_Shape")
+
 [node name="player" type="CharacterBody3D" parent="." unique_id=1200206334 groups=["player"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0249658, 1.4949837, 26.571333)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.753, -10)
 script = ExtResource("2_fj7yv")
 metadata/_edit_group_ = true
 
 [node name="player_mesh" type="MeshInstance3D" parent="player" unique_id=1309277088]
 transform = Transform3D(0.38, 0, 0, 0, 0.38, 0, 0, 0, 0.38, 0, -1, 0)
-mesh = ExtResource("9_soldier")
 
 [node name="player_colision" type="CollisionShape3D" parent="player" unique_id=1526271551]
 shape = SubResource("CapsuleShape3D_x13xl")
 
 [node name="player_camera" type="Camera3D" parent="player" unique_id=1079732315]
-transform = Transform3D(1, -2.2002792e-08, 1.7203138e-07, 6.1701293e-09, 0.9958054, 0.09149708, -1.7332296e-07, -0.09149708, 0.9958054, -0.006227374, 1.4229941, 1.3859959)
+transform = Transform3D(1, -2.2002792e-08, 1.7203138e-07, 6.1701293e-09, 0.9958054, 0.09149708, -1.7332296e-07, -0.09149708, 0.9958054, 0, 0.7, 0)
 script = ExtResource("4_aqk2v")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="player/player_camera" unique_id=1662400674]
